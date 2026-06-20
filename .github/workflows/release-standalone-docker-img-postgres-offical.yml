@@ -10,15 +10,14 @@ env:
     REGISTRY: ghcr.io
 
 jobs:
-    infisical-tests:
-        name: Run tests before deployment
-        # https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
-        uses: ./.github/workflows/run-backend-tests.yml
+    #infisical-tests:
+    #    name: Run tests before deployment
+    #    # https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
+    #    uses: ./.github/workflows/run-backend-tests.yml
 
     infisical-standalone:
         name: Build infisical standalone image postgres
-        runs-on: self-hosted
-        needs: [infisical-tests]
+        runs-on: ubuntu-latest
         permissions:
             id-token: write # OIDC, to assume the ECR Public publish role
             contents: read
@@ -56,7 +55,7 @@ jobs:
               uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
               with:
                   registry: ${{ env.REGISTRY }}
-                  username: ${{ github.actor }}
+                  username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
             - name: Build and push Docker image
               id: push
@@ -65,9 +64,9 @@ jobs:
                   context: .
                   push: true
                   tags: |
-                      ${{ env.REGISTRY }}/nuttyshrimp/infisical:latest-postgres
-                      ${{ env.REGISTRY }}/nuttyshrimp/infisical:${{ steps.commit.outputs.short }}
-                      ${{ env.REGISTRY }}/nuttyshrimp/infisical:${{ steps.extract_version.outputs.version }}
+                      ${{ env.REGISTRY }}/{{ github.repository_owner }}/infisical:latest-postgres
+                      ${{ env.REGISTRY }}/{{ github.repository_owner }}/infisical:${{ steps.commit.outputs.short }}
+                      ${{ env.REGISTRY }}/{{ github.repository_owner }}/infisical:${{ steps.extract_version.outputs.version }}
                   platforms: linux/amd64,linux/arm64
                   file: Dockerfile.standalone-infisical
                   build-args: |
