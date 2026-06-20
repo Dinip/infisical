@@ -64,9 +64,9 @@ jobs:
                   context: .
                   push: true
                   tags: |
-                      ${{ env.REGISTRY }}/{{ github.repository_owner }}/infisical:latest-postgres
-                      ${{ env.REGISTRY }}/{{ github.repository_owner }}/infisical:${{ steps.commit.outputs.short }}
-                      ${{ env.REGISTRY }}/{{ github.repository_owner }}/infisical:${{ steps.extract_version.outputs.version }}
+                      ${{ env.REGISTRY }}/${{ github.repository_owner }}/infisical:latest-postgres
+                      ${{ env.REGISTRY }}/${{ github.repository_owner }}/infisical:${{ steps.commit.outputs.short }}
+                      ${{ env.REGISTRY }}/${{ github.repository_owner }}/infisical:${{ steps.extract_version.outputs.version }}
                   platforms: linux/amd64,linux/arm64
                   file: Dockerfile.standalone-infisical
                   build-args: |
